@@ -1,0 +1,58 @@
+/*
+html, body {
+  margin: 0;
+  color: #333;
+  height: 100%;
+  overflow: hidden;
+}
+*/
+.NavCtrl {
+  font-family: "Tipperary", Arial, Helvetica, sans-serif;
+  text-align: left;
+  position: absolute;
+  top:0px;
+  left:0px;
+  width:800px;
+  height:480px;
+  background: #ffffff;
+  z-index: 0;
+  overflow:hidden;
+  font-size:1.8em;
+ }
+
+#loader {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  line-height: 160px;
+  margin: -80px 0 0 -80px;
+  left: 50%;
+  top: 50%;
+  z-index: 999;
+
+  background: #2f2f2f;
+  color: white;
+
+  font-family: "HelveticaNeue-Bold", "Helvetica-Bold" ,"Droid Sans";
+  font-size: 50%;
+  text-align: center;
+  border-radius: 10px;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+#playground {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 3;
+}
+
+#playground.hidden {
+  display: none;
+}
