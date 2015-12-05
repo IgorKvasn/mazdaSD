@@ -4,17 +4,32 @@
 
 function CompassCtrl(uiaId, parentDiv, ctrlId, properties) {
 
-    this.ctrlId = ctrlId;                
-    this.parentDiv = parentDiv;          
+    this.ctrlId = ctrlId;
+    this.parentDiv = parentDiv;
     this.uiaId = uiaId;
     this.hasDisplay = false;
     this.hasNav = false;
     this.nav = false;
     this.retryCount = 0;
-    this.id='someDiv';
+    this.id = 'someDiv';
 
     // Attempt to load the system
     this.attemptLoadSystem();
+
+    var that = this;
+    //after 5 seconds start sending GPS data and do it every 2 seconds
+    setTimeout(function () {
+
+        setInterval(function(){
+            that.setLocationData({
+                latitude: 50.6,
+                longitude: 10.5,
+                heading: 60,
+                speed: 70
+            });
+        }, 2000);//2 sec
+
+    }, 5000);//5 sec
 };
 
 /**
@@ -37,27 +52,27 @@ CompassCtrl.prototype = {
      * (System methods)
      */
 
-    attemptLoadSystem: function() {
+    attemptLoadSystem: function () {
 
         // this function tries to load the system
 
         // continue
-        var _continue = function() {
+        var _continue = function () {
 
             this.displayMissing();
 
             // check retry count
             this.retryCount++;
 
-            if(this.retryCount > this._MAXRETRY) {
+            if (this.retryCount > this._MAXRETRY) {
 
-                 this.ctrlLabel.innerHTML = "Invalid SD Card";
+                this.ctrlLabel.innerHTML = "Invalid SD Card";
 
             } else {
 
-                setTimeout(function() {
+                setTimeout(function () {
                     this.attemptLoadSystem();
-                }.bind(this), this._RETRYTIMEOUT); 
+                }.bind(this), this._RETRYTIMEOUT);
 
             }
 
@@ -67,7 +82,7 @@ CompassCtrl.prototype = {
         // attempt to load the update script
         try {
             // set timeout
-            var initTimeout = setTimeout(function() {
+            var initTimeout = setTimeout(function () {
                 _continue();
             }.bind(this), 850); // enough time?
 
@@ -77,27 +92,27 @@ CompassCtrl.prototype = {
             script.src = this._SYSTEMFILE;
 
             // finish
-            script.onload = function() {
+            script.onload = function () {
 
                 clearTimeout(initTimeout);
-            
+
                 this.invokeSystem();
 
             }.bind(this);
 
             document.body.appendChild(script);
-        
-        } catch(e) {
+
+        } catch (e) {
             // any error just continue
             _continue();
         }
     },
 
-    displayMissing: function() {
+    displayMissing: function () {
 
-        if(this.hasDisplay) return;
+        if (this.hasDisplay) return;
 
-         // Container element
+        // Container element
         this.ctrlDiv = document.createElement('div');
         this.ctrlDiv.id = this.id;
         this.ctrlDiv.className = 'CompassCtrl';
@@ -111,12 +126,12 @@ CompassCtrl.prototype = {
 
     },
 
-    invokeSystem: function() {
+    invokeSystem: function () {
 
-        if(typeof(NavCtrl) != "undefined") {
+        if (typeof(NavCtrl) != "undefined") {
 
             // clear display
-            if(this.hasDisplay) 
+            if (this.hasDisplay)
                 this.parentDiv.removeChild(this.ctrlDiv);
 
             this.nav = new NavCtrl(this.uiaId, this.parentDiv, this.ctrlId);
@@ -138,18 +153,18 @@ CompassCtrl.prototype = {
      * (hooks) methods
      */
 
-    cleanUp: function() {
+    cleanUp: function () {
 
-        if(!this.hasNav) return;
+        if (!this.hasNav) return;
 
         this.nav.cleanUp();
 
     },
 
-    setLocationData: function(location) {
+    setLocationData: function (location) {
 
         // check system loaded
-        if(!this.hasNav) return;
+        if (!this.hasNav) return;
 
         // pass
         this.nav.setLocationData(location);
@@ -157,31 +172,40 @@ CompassCtrl.prototype = {
 
 
     /**
-     * (legacy-hooks) 
+     * (legacy-hooks)
      * WARNING: DO NOT REMOVE. This function have no purpose but the original Compass app
      * is using these to send it's data to the control. If they are removed, you might
      * get a boot loop.
      */
 
-    setLatitude: function (latValue) {},
-    setLatitudeId: function (latValue, latSubMap) {},
-    setLongitude: function (lonValue) {},
-    setLongitudeId: function (lonValue, lonSubMap) {},
-    setElevation: function (eleValue) {},
-    setElevationId: function (eleValue, eleSubMap) {},
-    setAditionalText: function (additionalText) {},
-    setAditionalTextId: function (additionalTextId, additionalTextSubMap) {},
+    setLatitude: function (latValue) {
+    },
+    setLatitudeId: function (latValue, latSubMap) {
+    },
+    setLongitude: function (lonValue) {
+    },
+    setLongitudeId: function (lonValue, lonSubMap) {
+    },
+    setElevation: function (eleValue) {
+    },
+    setElevationId: function (eleValue, eleSubMap) {
+    },
+    setAditionalText: function (additionalText) {
+    },
+    setAditionalTextId: function (additionalTextId, additionalTextSubMap) {
+    },
 
-   
+
     /**
      * (input)
      */
 
-    handleControllerEvent: function(eventId) {
+    handleControllerEvent: function (eventId) {
 
-        if(!this.hasNav) return "ignored";
+        if (!this.hasNav) return "ignored";
 
         this.nav.handleControllerEvent(eventId);
     },
 
-}; /** (CompassCtrl.prototype) */
+};
+/** (CompassCtrl.prototype) */
